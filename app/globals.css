@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+/*
+  نظام التصميم (Design System) — عودة العقارية
+  ألوان دافئة وهادئة مستوحاة من طابع عقاري فاخر، مع خط عرض Amiri للعناوين
+  وخط IBM Plex Sans Arabic للنصوص وواجهة الاستخدام.
+*/
+
+:root {
+  --ink: #1F241F;
+  --ink-soft: #58604F;
+  --ink-faint: #838A76;
+  --bg: #F6F3EC;
+  --surface: #FFFFFF;
+  --card: #EFEAE0;
+  --line: #DCD4C3;
+  --brass: #93753F;
+  --brass-deep: #7A5F30;
+  --pine: #2E4436;
+  --pine-deep: #1F3025;
+  --danger: #9C4A3C;
+
+  --radius-sm: 0.6rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+}
+
+@theme inline {
+  --font-display: 'Amiri', serif;
+  --font-body: 'IBM Plex Sans Arabic', sans-serif;
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-brass: var(--brass);
+  --color-brass-deep: var(--brass-deep);
+  --color-pine: var(--pine);
+  --color-pine-deep: var(--pine-deep);
+  --color-danger: var(--danger);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Amiri', serif;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+/* حالة التركيز بالكيبورد — مرئية دائمًا لأسباب إتاحة الاستخدام */
+:focus-visible {
+  outline: 2px solid var(--brass-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Skeleton loading shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--card) 25%, #F8F5EE 37%, var(--card) 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
