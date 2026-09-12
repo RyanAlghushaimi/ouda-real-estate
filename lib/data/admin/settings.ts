@@ -28,9 +28,9 @@ export type SeoSettings = {
 const DEFAULT_CONTACT: ContactSettings = {
   companyNameAr: "عودة العقارية",
   companyNameEn: "Awda Real Estate",
-  phone: "+966500000000",
-  whatsapp: "+966500000000",
-  email: "info@awda-realestate.sa",
+  phone: "+966507397717",
+  whatsapp: "+966507397717",
+  email: "alouda1company@gmail.com",
   addressAr: "الرياض، المملكة العربية السعودية",
 };
 

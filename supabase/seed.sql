@@ -13,7 +13,7 @@
 insert into cities (id, name_ar, name_en, slug) values
   ('10000000-0000-0000-0000-000000000001', 'الرياض', 'Riyadh', 'riyadh'),
   ('10000000-0000-0000-0000-000000000002', 'جدة', 'Jeddah', 'jeddah'),
-  ('10000000-0000-0000-0000-000000000003', 'الدمام', 'Dammam', 'dammam')
+  ('10000000-0000-0000-0000-000000000003', 'بريدة', 'Buraydah', 'buraydah')
 on conflict (id) do nothing;
 
 -- -------------------------------------------------------------------------
@@ -233,5 +233,5 @@ insert into property_amenities (property_id, amenity_id) values
 -- إعدادات الموقع الأساسية
 -- -------------------------------------------------------------------------
 insert into site_settings (key, value) values
-  ('contact', '{"phone": "+966500000000", "whatsapp": "+966500000000", "email": "info@awda-realestate.sa", "address_ar": "الرياض، المملكة العربية السعودية"}')
+  ('contact', '{"phone": "+966507397717", "whatsapp": "+966507397717", "email": "alouda1company@gmail.com", "address_ar": "الرياض، المملكة العربية السعودية"}')
 on conflict (key) do nothing;
