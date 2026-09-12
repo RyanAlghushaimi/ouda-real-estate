@@ -25,22 +25,6 @@
   --radius-lg: 1.5rem;
 }
 
-html.dark {
-  --ink: #F1EEE6;
-  --ink-soft: #C7C2B5;
-  --ink-faint: #9E998C;
-  --bg: #151814;
-  --surface: #20251F;
-  --card: #292E28;
-  --line: #3B4038;
-  --brass: #C2A15C;
-  --brass-deep: #D2B66F;
-  --pine: #3E5A47;
-  --pine-deep: #2E4436;
-  --danger: #D06A59;
-}
-
-
 @theme inline {
   --font-display: 'Amiri', serif;
   --font-body: 'IBM Plex Sans Arabic', sans-serif;

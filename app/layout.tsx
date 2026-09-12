@@ -15,12 +15,7 @@ export default async function RootLayout({
   const locale = await getLocale();
 
   return (
-    <html
-  lang={locale}
-  dir={locale === "ar" ? "rtl" : "ltr"}
-  suppressHydrationWarning
->
-
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
