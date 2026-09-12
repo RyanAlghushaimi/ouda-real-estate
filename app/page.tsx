@@ -35,7 +35,8 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative">
-        <div className="relative h-[86vh] min-h-[520px] w-full overflow-hidden sm:h-[78vh]">
+        <div className="relative h-[68vh] min-h-[460px] w-full overflow-hidden sm:h-[72vh] lg:h-[78vh]">
+
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80"
@@ -58,7 +59,7 @@ export default async function Home() {
         </div>
 
         {/* Search bar overlapping hero */}
-        <div className="mx-auto -mt-14 max-w-5xl px-4 sm:-mt-10 sm:px-6 lg:px-0">
+        <div className="relative z-10 mx-auto -mt-8 max-w-5xl px-4 sm:-mt-10 sm:px-6 lg:px-0">
           <form
             action="/properties"
             className="grid grid-cols-2 gap-2.5 rounded-2xl border border-line bg-surface p-3.5 shadow-[0_20px_50px_-25px_rgba(31,36,31,0.5)] sm:grid-cols-4 sm:gap-3 sm:p-4"
