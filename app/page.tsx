@@ -186,7 +186,7 @@ export default async function Home() {
               <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_listed")}</p>
             </div>
             <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">+12</div>
+              <div className="font-display text-3xl text-ink sm:text-4xl">+100</div>
               <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_areas")}</p>
             </div>
             <div>
@@ -194,7 +194,7 @@ export default async function Home() {
               <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_clients")}</p>
             </div>
             <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">7</div>
+              <div className="font-display text-3xl text-ink sm:text-4xl">+20</div>
               <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_years")}</p>
             </div>
           </div>
