@@ -1,6 +1,7 @@
 import Link from "next/link";
 import MobileMenu from "@/components/MobileMenu";
 import LanguageToggle from "@/components/LanguageToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { getContactSettings } from "@/lib/data/admin/settings";
 import { getLocale } from "@/lib/i18n/locale";
 import { t } from "@/lib/i18n/dictionary";
@@ -25,7 +26,8 @@ export default async function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LanguageToggle locale={locale} />
+	<LanguageToggle locale={locale} />
+	<ThemeToggle />
           <a
             href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, "")}`}
             className="hidden rounded-full bg-pine px-5 py-2.5 text-sm text-white transition-colors hover:bg-pine/90 md:inline-block"
