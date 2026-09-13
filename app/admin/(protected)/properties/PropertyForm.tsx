@@ -44,19 +44,32 @@ export default function PropertyForm({
         </div>
       )}
 
-      {/* المعرّفات الأساسية */}
-      <section className="grid gap-4 rounded-2xl border border-line bg-surface p-5 sm:grid-cols-2">
-        <div>
-          <label className={labelClass}>رقم العقار (Ref No)</label>
-          <input name="refNo" defaultValue={initial?.refNo} className={inputClass} />
-          {fieldError("refNo") && <p className="mt-1 text-xs text-danger">{fieldError("refNo")}</p>}
-        </div>
-        <div>
-          <label className={labelClass}>الرابط (Slug)</label>
-          <input name="slug" defaultValue={initial?.slug} dir="ltr" className={inputClass} />
-          {fieldError("slug") && <p className="mt-1 text-xs text-danger">{fieldError("slug")}</p>}
-        </div>
-      </section>
+            {/* المعرّفات الأساسية — تظهر للعرض فقط عند تعديل عقار موجود */}
+      {initial && (
+        <section className="grid gap-4 rounded-2xl border border-line bg-surface p-5 sm:grid-cols-2">
+          <div>
+            <label className={labelClass}>رقم العقار (Ref No)</label>
+            <input
+              type="text"
+              value={initial.refNo}
+              readOnly
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>الرابط (Slug)</label>
+            <input
+              type="text"
+              value={initial.slug}
+              readOnly
+              dir="ltr"
+              className={inputClass}
+            />
+          </div>
+        </section>
+      )}
+
 
       {/* العناوين والوصف */}
       <section className="grid gap-4 rounded-2xl border border-line bg-surface p-5 sm:grid-cols-2">

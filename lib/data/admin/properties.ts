@@ -182,10 +182,23 @@ async function syncAmenities(propertyId: string, amenityIds: string[]) {
   }
 }
 
+function generatePropertySlug(title: string, refNo: string) {
+  const cleanTitle = title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const refNumber = refNo.replace(/^AWD-/i, "");
+
+  return `${cleanTitle || "property"}-${refNumber}`;
+}
+
+
 function toRow(input: PropertyFormInput) {
   return {
-    ref_no: input.refNo,
-    slug: input.slug,
     title_ar: input.titleAr,
     title_en: input.titleEn || null,
     description_ar: input.descriptionAr,
@@ -210,18 +223,86 @@ function toRow(input: PropertyFormInput) {
   };
 }
 
+async function generateRefNo(): Promise<string> {
+  const supabase = await db();
+
+  const { data, error } = await supabase
+    .from("properties")
+    .select("ref_no")
+    .like("ref_no", "AWD-%");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  let maxNumber = 1049;
+
+  for (const row of data ?? []) {
+    const match = /^AWD-(\d+)$/.exec(row.ref_no);
+
+    if (!match) continue;
+
+    const number = Number(match[1]);
+
+    if (Number.isSafeInteger(number)) {
+      maxNumber = Math.max(maxNumber, number);
+    }
+  }
+
+  return `AWD-${maxNumber + 1}`;
+}
+
+
 export async function createProperty(input: PropertyFormInput): Promise<ActionResult> {
   const supabase = await db();
 
-  const { data, error } = await supabase.from("properties").insert(toRow(input)).select("id").single();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const refNo = await generateRefNo();
+      const slug = generatePropertySlug(input.titleEn || "", refNo);
 
-  if (error || !data) {
-    return { ok: false, error: mapDbError(error?.message) };
+      const row = {
+        ...toRow(input),
+        ref_no: refNo,
+        slug,
+      };
+
+      const { data, error } = await supabase
+        .from("properties")
+        .insert(row)
+        .select("id")
+        .single();
+
+      if (!error && data) {
+        await syncAmenities(data.id, input.amenityIds);
+        return { ok: true, id: data.id };
+      }
+
+      if (
+        error?.message?.includes("duplicate key") &&
+        error.message.includes("ref_no")
+      ) {
+        continue;
+      }
+
+      return {
+        ok: false,
+        error: mapDbError(error?.message),
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
+      };
+    }
   }
 
-  await syncAmenities(data.id, input.amenityIds);
-  return { ok: true, id: data.id };
+  return {
+    ok: false,
+    error: "تعذر إنشاء رقم عقار فريد، حاول مرة أخرى",
+  };
 }
+
 
 export async function updateProperty(id: string, input: PropertyFormInput): Promise<ActionResult> {
   const supabase = await db();

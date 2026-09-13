@@ -1,284 +1,263 @@
 import { z } from "zod";
 
 /**
- * التحقق من UUID مع رسالة عربية واضحة.
- * نتحقق من الفراغ أولاً حتى لا تظهر رسالة "Invalid UUID"
- * للمستخدم عندما لا يختار قيمة من القائمة.
- */
+
+التحقق من UUID مع رسالة عربية واضحة.
+نتحقق من الفراغ أولاً حتى لا تظهر رسالة "Invalid UUID"
+للمستخدم عندما لا يختار قيمة من القائمة.
+*/
 const uuidPattern =
-  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 function requiredUuid(message: string) {
-  return z
-    .string()
-    .trim()
-    .min(1, message)
-    .regex(uuidPattern, "القيمة المحددة غير صحيحة");
+return z
+.string()
+.trim()
+.min(1, message)
+.regex(uuidPattern, "القيمة المحددة غير صحيحة");
 }
 
-
 export const propertySchema = z.object({
-  // ---------------------------------------------------------
-  // البيانات الأساسية
-  // ---------------------------------------------------------
+// ---------------------------------------------------------
+// البيانات الأساسية
+// ---------------------------------------------------------
 
-  refNo: z
-    .string()
-    .trim()
-    .min(2, "رقم العقار مطلوب"),
+// refNo و slug لا يأتيان من المستخدم.
+// يتم توليدهما في createProperty() على الخادم.
+// وفي التعديل لا يتم تغييرهما.
 
-  slug: z
-    .string()
-    .trim()
-    .min(2, "الرابط (Slug) مطلوب")
-    .regex(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-      "الرابط يجب أن يحتوي على أحرف إنجليزية صغيرة وأرقام وشرطات فقط"
-    ),
+// ---------------------------------------------------------
+// العنوان والوصف
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // العنوان والوصف
-  // ---------------------------------------------------------
+titleAr: z
+.string()
+.trim()
+.min(2, "العنوان بالعربي مطلوب"),
 
-  titleAr: z
-    .string()
-    .trim()
-    .min(2, "العنوان بالعربي مطلوب"),
+titleEn: z
+.string()
+.trim()
+.optional()
+.or(z.literal("")),
 
-  titleEn: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal("")),
+descriptionAr: z
+.string()
+.trim()
+.min(10, "الوصف بالعربي يجب ألا يقل عن 10 أحرف"),
 
-  descriptionAr: z
-    .string()
-    .trim()
-    .min(10, "الوصف بالعربي يجب ألا يقل عن 10 أحرف"),
+descriptionEn: z
+.string()
+.trim()
+.optional()
+.or(z.literal("")),
 
-  descriptionEn: z
-    .string()
-    .trim()
-    .optional()
-    .or(z.literal("")),
+// ---------------------------------------------------------
+// التصنيف والموقع
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // التصنيف والموقع
-  // ---------------------------------------------------------
+typeId: requiredUuid("اختر نوع العقار"),
 
-  typeId: requiredUuid("اختر نوع العقار"),
+purposeId: requiredUuid("اختر الغرض (بيع/إيجار)"),
 
-  purposeId: requiredUuid("اختر الغرض (بيع/إيجار)"),
+cityId: requiredUuid("اختر المدينة"),
 
-  cityId: requiredUuid("اختر المدينة"),
+districtId: requiredUuid("اختر الحي"),
 
-  districtId: requiredUuid("اختر الحي"),
+// ---------------------------------------------------------
+// الأرقام
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // الأرقام
-  // ---------------------------------------------------------
+price: z.coerce
+.number()
+.positive("السعر يجب أن يكون أكبر من صفر"),
 
-  price: z.coerce
-    .number()
-    .positive("السعر يجب أن يكون أكبر من صفر"),
+area: z.coerce
+.number()
+.nonnegative("المساحة يجب أن تكون رقمًا صحيحًا"),
 
-  area: z.coerce
-    .number()
-    .nonnegative("المساحة يجب أن تكون رقمًا صحيحًا"),
+bedrooms: z.coerce
+.number()
+.int()
+.nonnegative("عدد غرف النوم غير صحيح")
+.default(0),
 
-  bedrooms: z.coerce
-    .number()
-    .int()
-    .nonnegative("عدد غرف النوم غير صحيح")
-    .default(0),
+bathrooms: z.coerce
+.number()
+.int()
+.nonnegative("عدد الحمامات غير صحيح")
+.default(0),
 
-  bathrooms: z.coerce
-    .number()
-    .int()
-    .nonnegative("عدد الحمامات غير صحيح")
-    .default(0),
+parking: z.coerce
+.number()
+.int()
+.nonnegative("عدد المواقف غير صحيح")
+.default(0),
 
-  parking: z.coerce
-    .number()
-    .int()
-    .nonnegative("عدد المواقف غير صحيح")
-    .default(0),
+// ---------------------------------------------------------
+// الخيارات
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // الخيارات
-  // ---------------------------------------------------------
+furnished: z.coerce
+.boolean()
+.default(false),
 
-  furnished: z.coerce
-    .boolean()
-    .default(false),
+featured: z.coerce
+.boolean()
+.default(false),
 
-  featured: z.coerce
-    .boolean()
-    .default(false),
+published: z.coerce
+.boolean()
+.default(true),
 
-  published: z.coerce
-    .boolean()
-    .default(true),
+status: z
+.enum(["ready", "under_construction"])
+.default("ready"),
 
-  status: z
-    .enum(["ready", "under_construction"])
-    .default("ready"),
+// ---------------------------------------------------------
+// الموقع الجغرافي
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // الموقع الجغرافي
-  // ---------------------------------------------------------
+lat: z.coerce
+.number()
+.min(-90, "خط العرض غير صحيح")
+.max(90, "خط العرض غير صحيح")
+.optional(),
 
-  lat: z.coerce
-    .number()
-    .min(-90, "خط العرض غير صحيح")
-    .max(90, "خط العرض غير صحيح")
-    .optional(),
+lng: z.coerce
+.number()
+.min(-180, "خط الطول غير صحيح")
+.max(180, "خط الطول غير صحيح")
+.optional(),
 
-  lng: z.coerce
-    .number()
-    .min(-180, "خط الطول غير صحيح")
-    .max(180, "خط الطول غير صحيح")
-    .optional(),
+// ---------------------------------------------------------
+// SEO
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // SEO
-  // ---------------------------------------------------------
+metaTitle: z
+.string()
+.trim()
+.max(160, "Meta Title يجب ألا يتجاوز 160 حرفًا")
+.optional()
+.or(z.literal("")),
 
-  metaTitle: z
-    .string()
-    .trim()
-    .max(160, "Meta Title يجب ألا يتجاوز 160 حرفًا")
-    .optional()
-    .or(z.literal("")),
+metaDescription: z
+.string()
+.trim()
+.max(300, "Meta Description يجب ألا يتجاوز 300 حرف")
+.optional()
+.or(z.literal("")),
 
-  metaDescription: z
-    .string()
-    .trim()
-    .max(300, "Meta Description يجب ألا يتجاوز 300 حرف")
-    .optional()
-    .or(z.literal("")),
+// ---------------------------------------------------------
+// المميزات
+// ---------------------------------------------------------
 
-  // ---------------------------------------------------------
-  // المميزات
-  // ---------------------------------------------------------
-
-  amenityIds: z
-  .array(
-    z
-      .string()
-      .trim()
-      .regex(
-        /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
-        "معرّف الميزة غير صحيح"
-      )
-  )
-  .default([]),
-
+amenityIds: z
+.array(
+z
+.string()
+.trim()
+.regex(
+uuidPattern,
+"معرّف الميزة غير صحيح"
+)
+)
+.default([]),
 });
 
 export type PropertyFormInput = z.infer<typeof propertySchema>;
 
 /**
- * تحويل FormData القادمة من نموذج العقار
- * إلى الشكل الذي يتوقعه propertySchema.
- */
+
+تحويل FormData القادمة من نموذج العقار
+
+إلى الشكل الذي يتوقعه propertySchema.
+*/
 export function parsePropertyFormData(formData: FormData) {
-  const raw = {
-    // -------------------------------------------------------
-    // البيانات الأساسية
-    // -------------------------------------------------------
+const raw = {
+// -------------------------------------------------------
+// العنوان والوصف
+// -------------------------------------------------------
 
-    refNo: String(formData.get("refNo") ?? ""),
+titleAr: String(formData.get("titleAr") ?? ""),
 
-    slug: String(formData.get("slug") ?? ""),
+titleEn: String(formData.get("titleEn") ?? ""),
 
-    // -------------------------------------------------------
-    // العنوان والوصف
-    // -------------------------------------------------------
+descriptionAr: String(formData.get("descriptionAr") ?? ""),
 
-    titleAr: String(formData.get("titleAr") ?? ""),
+descriptionEn: String(formData.get("descriptionEn") ?? ""),
 
-    titleEn: String(formData.get("titleEn") ?? ""),
+// -------------------------------------------------------
+// التصنيف والموقع
+// -------------------------------------------------------
 
-    descriptionAr: String(formData.get("descriptionAr") ?? ""),
+typeId: String(formData.get("typeId") ?? ""),
 
-    descriptionEn: String(formData.get("descriptionEn") ?? ""),
+purposeId: String(formData.get("purposeId") ?? ""),
 
-    // -------------------------------------------------------
-    // التصنيف والموقع
-    // -------------------------------------------------------
+cityId: String(formData.get("cityId") ?? ""),
 
-    typeId: String(formData.get("typeId") ?? ""),
+districtId: String(formData.get("districtId") ?? ""),
 
-    purposeId: String(formData.get("purposeId") ?? ""),
+// -------------------------------------------------------
+// الأرقام
+// -------------------------------------------------------
 
-    cityId: String(formData.get("cityId") ?? ""),
+price: formData.get("price"),
 
-    districtId: String(formData.get("districtId") ?? ""),
+area: formData.get("area"),
 
-    // -------------------------------------------------------
-    // الأرقام
-    // -------------------------------------------------------
+bedrooms: formData.get("bedrooms"),
 
-    price: formData.get("price"),
+bathrooms: formData.get("bathrooms"),
 
-    area: formData.get("area"),
+parking: formData.get("parking"),
 
-    bedrooms: formData.get("bedrooms"),
+// -------------------------------------------------------
+// الخيارات
+// -------------------------------------------------------
 
-    bathrooms: formData.get("bathrooms"),
+furnished: formData.get("furnished") === "on",
 
-    parking: formData.get("parking"),
+featured: formData.get("featured") === "on",
 
-    // -------------------------------------------------------
-    // الخيارات
-    // -------------------------------------------------------
+published: formData.get("published") === "on",
 
-    furnished: formData.get("furnished") === "on",
+status: String(formData.get("status") ?? "ready"),
 
-    featured: formData.get("featured") === "on",
+// -------------------------------------------------------
+// الموقع الجغرافي
+// -------------------------------------------------------
 
-    published: formData.get("published") === "on",
+lat:
+formData.get("lat") !== null &&
+String(formData.get("lat")).trim() !== ""
+? String(formData.get("lat"))
+: undefined,
 
-    status: String(formData.get("status") ?? "ready"),
+lng:
+formData.get("lng") !== null &&
+String(formData.get("lng")).trim() !== ""
+? String(formData.get("lng"))
+: undefined,
 
-    // -------------------------------------------------------
-    // الموقع الجغرافي
-    // -------------------------------------------------------
+// -------------------------------------------------------
+// SEO
+// -------------------------------------------------------
 
-    lat:
-      formData.get("lat") !== null &&
-      String(formData.get("lat")).trim() !== ""
-        ? String(formData.get("lat"))
-        : undefined,
+metaTitle: String(formData.get("metaTitle") ?? ""),
 
-    lng:
-      formData.get("lng") !== null &&
-      String(formData.get("lng")).trim() !== ""
-        ? String(formData.get("lng"))
-        : undefined,
+metaDescription: String(formData.get("metaDescription") ?? ""),
 
-    // -------------------------------------------------------
-    // SEO
-    // -------------------------------------------------------
+// -------------------------------------------------------
+// المميزات
+// -------------------------------------------------------
 
-    metaTitle: String(formData.get("metaTitle") ?? ""),
+amenityIds: formData
+.getAll("amenityIds")
+.map((value) => String(value).trim())
+.filter(Boolean),
+};
 
-    metaDescription: String(formData.get("metaDescription") ?? ""),
-
-    // -------------------------------------------------------
-    // المميزات
-    //
-    // مهم:
-    // getAll() ضروري لأن checkbox باسم amenityIds
-    // يمكن أن يرسل أكثر من قيمة.
-    // -------------------------------------------------------
-
-    amenityIds: formData
-      .getAll("amenityIds")
-      .map((value) => String(value).trim())
-      .filter(Boolean),
-  };
-
-  return propertySchema.safeParse(raw);
+return propertySchema.safeParse(raw);
 }
