@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import { getLocale } from "@/lib/i18n/locale";
+import PageViewTracker from "@/app/components/PageViewTracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -18,13 +19,21 @@ export default async function RootLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+
+      <body>
+        <PageViewTracker />
+        {children}
+      </body>
     </html>
   );
 }

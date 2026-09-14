@@ -32,13 +32,18 @@ export default async function AdminOverviewPage() {
     <div>
       <h1 className="font-display text-2xl text-ink">نظرة عامة</h1>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard label="إجمالي العقارات" value={stats.totalProperties} />
         <StatCard label="منشورة" value={stats.publishedProperties} />
         <StatCard label="مميزة" value={stats.featuredProperties} />
         <StatCard label="للبيع" value={stats.forSaleProperties} />
         <StatCard label="للإيجار" value={stats.forRentProperties} />
         <StatCard label="استفسارات جديدة" value={stats.newLeads} />
+	<StatCard label="زوار اليوم" value={stats.visitorsToday} />
+	<StatCard label="زوار آخر 7 أيام" value={stats.visitorsLast7Days} />
+	<StatCard label="زوار آخر 30 يومًا" value={stats.visitorsLast30Days} />
+	<StatCard label="إجمالي الزيارات" value={stats.totalPageViews} />
+
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
