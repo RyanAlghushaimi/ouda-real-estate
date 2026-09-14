@@ -59,21 +59,57 @@ export async function getPropertyTypes(): Promise<string[]> {
 
 export async function getAreaHighlights(): Promise<AreaHighlight[]> {
   const supabase = getSupabaseClient();
-  if (!supabase) return mockAreaHighlights;
 
-  const { data, error } = await supabase
-    .from("districts")
-    .select("name_ar, image_url, cities(name_ar), properties:properties(count)")
-    .not("image_url", "is", null);
+  const cities = [
+    {
+      name: "الرياض",
+      city: "الرياض",
+      cityEn: "Riyadh",
+      image:
+        "https://assets.aqar.fm/blog/2020/10/%D8%A8%D8%B1%D8%AC-%D8%A7%D9%84%D9%85%D9%85%D9%84%D9%83%D8%A9.jpg",
+    },
+    {
+      name: "جدة",
+      city: "جدة",
+      cityEn: "Jeddah",
+      image:
+        "https://cdn.sa.emaar.com/wp-content/uploads/2020/12/JE-0614-camera-03-706x385.jpg",
+    },
+    {
+      name: "بريدة",
+      city: "بريدة",
+      cityEn: "Buraydah",
+      image:
+        "https://dealapp.sa/blog/wp-content/uploads/2020/04/%D8%A8%D8%B1%D9%8A%D8%AF%D8%A9.jpg",
+    },
+  ];
 
-  if (error || !data) return mockAreaHighlights;
+  if (!supabase) {
+    return cities.map((city) => ({
+      ...city,
+      listingsCount: properties.filter((p) => p.city === city.city).length,
+    }));
+  }
 
-  return data.map((d) => ({
-    name: d.name_ar,
-    city: (d.cities as unknown as { name_ar: string } | null)?.name_ar ?? "",
-    image: d.image_url as string,
-    listingsCount: (d.properties as unknown as { count: number }[] | null)?.[0]?.count ?? 0,
-  }));
+  const result = await Promise.all(
+    cities.map(async (city) => {
+      const { count } = await supabase
+        .from("properties")
+        .select("id, cities!inner(name_ar)", {
+          count: "exact",
+          head: true,
+        })
+        .eq("published", true)
+        .eq("cities.name_ar", city.city);
+
+      return {
+        ...city,
+        listingsCount: count ?? 0,
+      };
+    })
+  );
+
+  return result;
 }
 
 export async function filterProperties(filters: PropertyFilters): Promise<Property[]> {
@@ -163,14 +199,35 @@ export async function filterPropertiesPaginated(
     };
   }
 
-  let query = supabase
-    .from("properties")
-    .select(PROPERTY_SELECT, { count: "exact" })
-    .eq("published", true);
+  const select = `
+  id, ref_no, slug, title_ar, title_en, description_ar, description_en,
+  price, currency, area, bedrooms, bathrooms, parking, furnished,
+  status, featured, published, lat, lng, created_at, meta_title, meta_description,
+  property_types${filters.type ? "!inner" : ""} ( name_ar, name_en, slug ),
+  purposes${filters.purpose ? "!inner" : ""} ( code, name_ar, name_en ),
+  cities${filters.city ? "!inner" : ""} ( name_ar, name_en, slug ),
+  districts ( name_ar, name_en, slug ),
+  property_images ( url, is_primary, sort_order ),
+  property_amenities ( amenities ( name_ar, name_en ) )
+`;
 
-  if (filters.city) query = query.eq("cities.name_ar", filters.city);
-  if (filters.type) query = query.eq("property_types.name_ar", filters.type);
-  if (filters.purpose) query = query.eq("purposes.code", filters.purpose);
+let query = supabase
+  .from("properties")
+  .select(select, { count: "exact" })
+  .eq("published", true);
+
+if (filters.city) {
+  query = query.eq("cities.name_ar", filters.city);
+}
+
+if (filters.type) {
+  query = query.eq("property_types.name_ar", filters.type);
+}
+
+if (filters.purpose) {
+  query = query.eq("purposes.code", filters.purpose);
+}
+
   if (filters.minPrice) query = query.gte("price", Number(filters.minPrice));
   if (filters.maxPrice) query = query.lte("price", Number(filters.maxPrice));
   if (filters.bedrooms) query = query.gte("bedrooms", Number(filters.bedrooms));
@@ -191,6 +248,10 @@ export async function filterPropertiesPaginated(
 
   const start = (page - 1) * pageSize;
   const { data, error, count } = await query.range(start, start + pageSize - 1);
+
+console.log("PROPERTY DATA:", JSON.stringify(data, null, 2));
+console.log("PROPERTY ERROR:", error);
+
 
   if (error) {
     console.error("filterPropertiesPaginated (Supabase) error:", error.message);

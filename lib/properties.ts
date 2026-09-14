@@ -313,41 +313,37 @@ export const properties: Property[] = [
 
 export const areaHighlights: AreaHighlight[] = [
   {
-    name: "حي الملقا",
+    name: "الرياض",
     city: "الرياض",
     cityEn: "Riyadh",
-    image: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&q=80",
-    listingsCount: properties.filter((p) => p.district === "حي الملقا").length,
+    image: "https://assets.aqar.fm/blog/2020/10/%D8%A8%D8%B1%D8%AC-%D8%A7%D9%84%D9%85%D9%85%D9%84%D9%83%D8%A9.jpg",
+    listingsCount: properties.filter((p) => p.city === "الرياض").length,
   },
   {
-    name: "حي الشاطئ",
+    name: "جدة",
     city: "جدة",
     cityEn: "Jeddah",
-    image: "https://images.unsplash.com/photo-1519999482648-25049ddd37b1?w=900&q=80",
-    listingsCount: properties.filter((p) => p.district === "حي الشاطئ").length,
+    image: "https://cdn.sa.emaar.com/wp-content/uploads/2020/12/JE-0614-camera-03-706x385.jpg",
+    listingsCount: properties.filter((p) => p.city === "جدة").length,
   },
   {
-    name: "حي العليا",
-    city: "الرياض",
-    cityEn: "Riyadh",
-    image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=900&q=80",
-    listingsCount: properties.filter((p) => p.district === "حي العليا").length,
-  },
-  {
-    name: "حي الشاطئ الغربي",
-    city: "الدمام",
-    cityEn: "Dammam",
-    image: "https://images.unsplash.com/photo-1449034446853-66c86144b0ad?w=900&q=80",
-    listingsCount: properties.filter((p) => p.district === "حي الشاطئ الغربي").length,
+    name: "بريدة",
+    city: "بريدة",
+    cityEn: "Buraiyda",
+    image: "https://dealapp.sa/blog/wp-content/uploads/2020/04/%D8%A8%D8%B1%D9%8A%D8%AF%D8%A9.jpg",
+    listingsCount: properties.filter((p) => p.city === "بريدة").length,
   },
 ];
 
 export const cities = Array.from(new Set(properties.map((p) => p.city)));
 export const propertyTypes = Array.from(new Set(properties.map((p) => p.type)));
 
-export function formatPrice(n: number) {
-  return new Intl.NumberFormat("ar-SA").format(n);
+export function formatPrice(n: number, locale: "ar" | "en" = "ar") {
+  return new Intl.NumberFormat(
+    locale === "en" ? "en-US" : "ar-SA"
+  ).format(n);
 }
+
 
 export function getPropertyById(id: string) {
   return properties.find((p) => p.id === id);

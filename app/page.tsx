@@ -181,23 +181,27 @@ export default async function Home() {
             </LinkButton>
           </div>
           <div className="grid grid-cols-2 gap-6 self-center">
-            <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">+300</div>
-              <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_listed")}</p>
-            </div>
-            <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">+100</div>
-              <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_areas")}</p>
-            </div>
-            <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">+150</div>
-              <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_clients")}</p>
-            </div>
-            <div>
-              <div className="font-display text-3xl text-ink sm:text-4xl">+20</div>
-              <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_years")}</p>
-            </div>
-          </div>
+  <div>
+    <div className="font-display text-3xl text-ink sm:text-4xl">+1000</div>
+    <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_listed")}</p>
+  </div>
+
+  <div>
+    <div className="font-display text-3xl text-ink sm:text-4xl">+1000</div>
+    <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_areas")}</p>
+  </div>
+
+  <div>
+    <div className="font-display text-3xl text-ink sm:text-4xl">+4000</div>
+    <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_clients")}</p>
+  </div>
+
+  <div>
+    <div className="font-display text-3xl text-ink sm:text-4xl">+20</div>
+    <p className="mt-1 text-sm text-ink-soft">{t(locale, "stat_years")}</p>
+  </div>
+</div>
+
         </div>
       </section>
 

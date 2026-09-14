@@ -194,7 +194,8 @@ export default async function PropertyDetailPage({
 
           <aside className="h-fit rounded-2xl border border-line bg-surface p-6 lg:sticky lg:top-24">
             <div className="font-display text-xl text-brass-deep sm:text-2xl">
-              {formatPrice(p.price)} {locale === "en" ? "SAR" : "ر.س"}{p.purpose === "rent" ? ` ${t(locale, "annually")}` : ""}
+              {formatPrice(p.price, locale)} {locale === "en" ? "SAR" : "ر.س"}
+{p.purpose === "rent" ? ` ${t(locale, "annually")}` : ""}
             </div>
             <p className="mt-1 text-xs text-ink-faint">{t(locale, "detail_price_note")}</p>
 

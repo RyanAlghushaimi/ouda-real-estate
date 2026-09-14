@@ -6,7 +6,13 @@ import PropertyCard from "@/components/PropertyCard";
 import PropertiesMapLoader from "@/components/PropertiesMapLoader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LinkButton } from "@/components/ui/Button";
-import { getCities, getPropertyTypes, filterProperties, filterPropertiesPaginated } from "@/lib/data/properties";
+import {
+  getCities,
+  getPropertyTypes,
+  filterProperties,
+  filterPropertiesPaginated,
+} from "@/lib/data/properties";
+
 import { getLocale } from "@/lib/i18n/locale";
 import { t } from "@/lib/i18n/dictionary";
 
@@ -95,9 +101,20 @@ export default async function PropertiesPage({
 
           <select name="type" defaultValue={params.type ?? ""} className="rounded-xl border border-line bg-bg px-3 py-2.5 text-sm text-ink">
             <option value="">{t(locale, "filter_all_types")}</option>
-            {propertyTypes.map((pt) => (
-              <option key={pt} value={pt}>{pt}</option>
-            ))}
+            {propertyTypes.map((pt) => {
+  const typeTranslations: Record<string, string> = {
+    "شقة": "Apartment",
+    "فيلا": "Villa",
+    "أرض": "Land",
+    "دوبلكس": "Duplex",
+  };
+
+  return (
+    <option key={pt} value={pt}>
+      {locale === "en" ? (typeTranslations[pt] ?? pt) : pt}
+    </option>
+  );
+})}
           </select>
 
           <input
