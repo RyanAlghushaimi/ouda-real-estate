@@ -60,7 +60,8 @@ export default async function AdminPropertiesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-ink-soft">{p.district}، {p.city}</td>
-                  <td className="px-4 py-3 text-ink-soft">{formatPrice(p.price, locale)} {locale === "en" ? "SAR" : "ر.س"}</td>
+                  <td className="px-4 py-3 text-ink-soft">{formatPrice(p.price, "ar")} ر.س</td>
+
                   <td className="px-4 py-3 text-ink-soft">{p.purpose}</td>
                   <td className="px-4 py-3 text-ink-soft">{p.status === "ready" ? "جاهز" : "تحت الإنشاء"}</td>
                   <td className="px-4 py-3">

@@ -7,11 +7,13 @@ import {
   filterProperties as mockFilterProperties,
   getPropertyById as mockGetPropertyById,
   getRelatedProperties as mockGetRelatedProperties,
+  properties,
   formatPrice,
   type Property,
   type AreaHighlight,
   type PropertyFilters,
 } from "@/lib/properties";
+
 
 // =============================================================================
 // طبقة البيانات الموحّدة (Data Access Layer)
